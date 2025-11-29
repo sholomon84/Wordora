@@ -42,6 +42,38 @@ h1 {
     margin-bottom: 30px;
 }
 
+/* Переключатель режимов */
+.game-mode-selector {
+    margin: 20px 0;
+}
+
+.game-mode-selector label {
+    margin: 0 15px;
+    font-size: 20px;
+    color: #1c1c1e;
+}
+
+.game-mode-selector input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Кнопка сброса прогресса */
+#resetProgressButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-left: 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff3b30;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+#resetProgressButton:hover {
+    opacity: 0.9;
+}
+
 /* Буквы */
 #letters {
     font-family: 'Cactus Classical Serif', serif;
@@ -95,7 +127,7 @@ h1 {
 }
 
 #undoButton {
-    background-color: #8e8e93; /* Серый цвет вместо красного */
+    background-color: #8e8e93;
 }
 
 #undoButton:hover {
@@ -168,4 +200,21 @@ h1 {
 #rules h2 {
     font-size: 24px;
     color: #007aff;
+}
+
+/* Стили для таймера и звука */
+#timer {
+    font-size: 14px;
+    color: #1c1c1e;
+    font-weight: 600;
+}
+
+#soundToggle {
+    margin-right: 5px;
+}
+
+#soundToggle + label {
+    font-size: 14px;
+    color: #1c1c1e;
+    font-weight: 600;
 }

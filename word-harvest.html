@@ -6,37 +6,30 @@
     <title>Wordora</title>
     <link href="https://fonts.googleapis.com/css2?family=Cactus+Classical+Serif&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="word-harvest-style.css">
-    <!-- Подключение библиотеки конфетти -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="game">
         <h1>Wordora</h1>
+
+        <!-- Переключатель режимов -->
+        <div class="game-mode-selector">
+            <label>
+                <input type="radio" name="gameMode" value="training" checked> Тренировочный режим
+            </label>
+            <label>
+                <input type="radio" name="gameMode" value="game"> Игровой режим
+            </label>
+            <button id="resetProgressButton" style="display: none;">Сбросить прогресс</button>
+        </div>
+
         <label for="level">Выберите уровень:</label>
         <select id="level">
-            <option value="5">Уровень 1 (5 букв)</option>
-            <option value="6">Уровень 2 (6 букв)</option>
-            <option value="7">Уровень 3 (7 букв)</option>
-            <option value="8">Уровень 4 (8 букв)</option>
-            <option value="9">Уровень 5 (9 букв)</option>
-            <option value="10">Уровень 6 (10 букв)</option>
-            <option value="11">Уровень 7 (11 букв)</option>
-            <option value="12">Уровень 8 (12 букв)</option>
-            <option value="13">Уровень 9 (13 букв)</option>
-            <option value="14">Уровень 10 (14 букв)</option>
-            <option value="15">Уровень 11 (15 букв)</option>
-            <option value="16">Уровень 12 (16 букв)</option>
-            <option value="17">Уровень 13 (17 букв)</option>
-            <option value="18">Уровень 14 (18 букв)</option>
-            <option value="19">Уровень 15 (19 букв)</option>
-            <option value="20">Уровень 16 (20 букв)</option>
-            <option value="21">Уровень 17 (21 буква)</option>
-            <option value="22">Уровень 18 (22 буквы)</option>
-            <option value="23">Уровень 19 (23 буквы)</option>
-            <option value="24">Уровень 20 (24 буквы)</option>
+            <!-- Уровни будут динамически обновляться в JS -->
         </select>
         <button id="startButton">Начать игру</button>
 
+        <!-- Переключатель количества слов -->
         <div class="mode-selector">
             <label>
                 <input type="radio" name="mode" value="twoWords" checked> Буквы из двух слов
@@ -63,7 +56,12 @@
         <button id="showAnswerButton">Правильный ответ</button>
         <p id="message"></p>
         <p>Осталось букв: <span id="remainingLetters">0</span></p>
+        <p>Время: <span id="timer">00:00</span></p>
+        <p><label><input type="checkbox" id="soundToggle" checked> Звук</label></p> <!-- Чекбокс для звука -->
         <div id="usedWords"></div>
+
+        <!-- Элемент для звука -->
+        <audio id="victorySound" src="victory.mp3"></audio> <!-- Замени victory.mp3 на путь к твоему файлу -->
     </div>
     <script src="dictionary.js"></script>
     <script src="word-harvest-script.js"></script>

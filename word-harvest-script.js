@@ -4,6 +4,35 @@ let usedWords = [];
 let moveHistory = [];
 let generatedWords = [];
 let hintIndex = 0;
+let currentMode = "training";
+let completedLevels = JSON.parse(localStorage.getItem("completedLevels")) || [];
+let timerInterval = null;
+let secondsElapsed = 0;
+let soundEnabled = true; // По умолчанию звук включён
+
+// Список всех уровней
+const allLevels = [
+    { value: 5, text: "Уровень 1 (5 букв)" },
+    { value: 6, text: "Уровень 2 (6 букв)" },
+    { value: 7, text: "Уровень 3 (7 букв)" },
+    { value: 8, text: "Уровень 4 (8 букв)" },
+    { value: 9, text: "Уровень 5 (9 букв)" },
+    { value: 10, text: "Уровень 6 (10 букв)" },
+    { value: 11, text: "Уровень 7 (11 букв)" },
+    { value: 12, text: "Уровень 8 (12 букв)" },
+    { value: 13, text: "Уровень 9 (13 букв)" },
+    { value: 14, text: "Уровень 10 (14 букв)" },
+    { value: 15, text: "Уровень 11 (15 букв)" },
+    { value: 16, text: "Уровень 12 (16 букв)" },
+    { value: 17, text: "Уровень 13 (17 букв)" },
+    { value: 18, text: "Уровень 14 (18 букв)" },
+    { value: 19, text: "Уровень 15 (19 букв)" },
+    { value: 20, text: "Уровень 16 (20 букв)" },
+    { value: 21, text: "Уровень 17 (21 буква)" },
+    { value: 22, text: "Уровень 18 (22 буквы)" },
+    { value: 23, text: "Уровень 19 (23 буквы)" },
+    { value: 24, text: "Уровень 20 (24 буквы)" }
+];
 
 // Отображаем буквы на экране
 function displayLetters() {
@@ -11,7 +40,36 @@ function displayLetters() {
     lettersElement.textContent = letters.join(" ");
 }
 
-// Проверка слова с эффектом конфетти при победе
+// Обновляем список уровней в зависимости от режима
+function updateLevelSelect() {
+    const levelSelect = document.getElementById("level");
+    const resetButton = document.getElementById("resetProgressButton");
+    levelSelect.innerHTML = "";
+
+    if (currentMode === "training") {
+        allLevels.forEach(level => {
+            const option = document.createElement("option");
+            option.value = level.value;
+            option.textContent = level.text;
+            levelSelect.appendChild(option);
+        });
+        resetButton.style.display = "none";
+    } else {
+        let maxAccessibleLevel = completedLevels.length > 0 ? Math.max(...completedLevels) + 1 : 5;
+        allLevels.forEach(level => {
+            if (level.value <= maxAccessibleLevel) {
+                const option = document.createElement("option");
+                option.value = level.value;
+                option.textContent = level.text;
+                levelSelect.appendChild(option);
+            }
+        });
+        resetButton.style.display = "inline-block";
+    }
+    updateModeAvailability();
+}
+
+// Проверка слова
 function checkWord() {
     const word = document.getElementById("wordInput").value.toLowerCase();
     const messageElement = document.getElementById("message");
@@ -57,12 +115,19 @@ function checkWord() {
 
         if (remainingLetters === 0) {
             messageElement.textContent = "Поздравляем! Вы использовали все буквы!";
-            // Запуск эффекта конфетти
-            confetti({
-                particleCount: 200,
-                spread: 90,
-                origin: { y: 0.6 }
-            });
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+            if (soundEnabled) {
+                document.getElementById("victorySound").play();
+            }
+            if (currentMode === "game") {
+                clearInterval(timerInterval);
+                const currentLevel = parseInt(document.getElementById("level").value);
+                if (!completedLevels.includes(currentLevel)) {
+                    completedLevels.push(currentLevel);
+                    localStorage.setItem("completedLevels", JSON.stringify(completedLevels));
+                    updateLevelSelect();
+                }
+            }
         }
     } else {
         messageElement.textContent = `Слово "${word}" нельзя составить из этих букв.`;
@@ -80,15 +145,14 @@ function shuffleLetters(array) {
     return array;
 }
 
-// Выбор случайного слова из словаря по количеству букв
+// Выбор случайного слова из словаря
 function getRandomWord(letterCount) {
     const suitableWords = dictionary.filter(word => word.length === letterCount);
     if (suitableWords.length === 0) {
         document.getElementById("message").textContent = "В словаре нет слов с таким количеством букв!";
         return null;
     }
-    const randomIndex = Math.floor(Math.random() * suitableWords.length);
-    return suitableWords[randomIndex];
+    return suitableWords[Math.floor(Math.random() * suitableWords.length)];
 }
 
 // Генерация букв для уровня (режим 1: из двух слов)
@@ -250,6 +314,26 @@ function generateLettersFromFiveWords(count) {
     return shuffleLetters(combinedLetters);
 }
 
+// Запуск и остановка таймера
+function startTimer() {
+    secondsElapsed = 0;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const minutes = Math.floor(secondsElapsed / 60);
+        const seconds = secondsElapsed % 60;
+        document.getElementById("timer").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+}
+
+// Сброс прогресса
+function resetProgress() {
+    completedLevels = [];
+    localStorage.setItem("completedLevels", JSON.stringify(completedLevels));
+    updateLevelSelect();
+    document.getElementById("message").textContent = "Прогресс сброшен! Начинайте с уровня 1.";
+}
+
 // Начало игры
 function startGame() {
     const level = parseInt(document.getElementById("level").value);
@@ -274,6 +358,12 @@ function startGame() {
     document.getElementById("remainingLetters").textContent = remainingLetters;
     document.getElementById("usedWords").textContent = "";
     document.getElementById("message").textContent = "";
+    
+    if (currentMode === "game") {
+        startTimer();
+    } else {
+        document.getElementById("timer").textContent = "00:00";
+    }
 }
 
 // Отмена хода
@@ -316,7 +406,7 @@ function showHint() {
     document.getElementById("message").textContent = `Подсказка: буква "${letterToHighlight}".`;
 }
 
-// Показать правильный ответ с гиперссылками
+// Показать правильный ответ
 function showAnswer() {
     if (generatedWords.length === 0) {
         alert("Нет данных для подсказки!");
@@ -341,10 +431,10 @@ function toggleRules() {
             <p>Случайно выбираются несколько слов из словаря, их буквы перемешиваются и появляются на поле.</p>
             <p>Задача: составить из этих букв слова — имена существительные, нарицательные, единственного числа, используя только те буквы, что есть.</p>
             <p>Когда слово составлено, его буквы исчезают. Нужно освободить поле от всех букв.</p>
-            <p>Если букв не осталось — победа! Можно выбрать новый уровень.</p>
+            <p>Если букв не осталось — победа! В тренировочном режиме все уровни доступны сразу. В игровом режиме уровни открываются поэтапно: начинаете с уровня 5, следующий доступен только после прохождения предыдущего.</p>
             <p>Подсказка: показывает по одной букве первого слова. Правильный ответ: открывает все слова. Отмена хода: возвращает последнее слово.</p>
             <p>Важно: можно составлять любые слова, не обязательно те, что в ответе, главное — очистить поле.</p>
-            <p>Уровни: от 5 до 24 букв. Режимы: буквы из 2, 3, 4 или 5 слов.</p>
+            <p>Уровни: от 5 до 24 букв. Режимы: буквы из 2 слов доступны с уровня 5, из 3 слов — с уровня 8, из 4 слов — с уровня 16, из 5 слов — с уровня 20.</p>
         `;
         rulesButton.textContent = "Скрыть правила";
     } else {
@@ -353,16 +443,9 @@ function toggleRules() {
     }
 }
 
-// Инициализация
-document.getElementById("startButton").addEventListener("click", startGame);
-document.getElementById("checkButton").addEventListener("click", checkWord);
-document.getElementById("undoButton").addEventListener("click", undoMove);
-document.getElementById("hintButton").addEventListener("click", showHint);
-document.getElementById("showAnswerButton").addEventListener("click", showAnswer);
-document.getElementById("rulesButton").addEventListener("click", toggleRules);
-
-document.getElementById("level").addEventListener("change", function () {
-    const level = parseInt(this.value);
+// Обновление доступности выбора количества слов
+function updateModeAvailability() {
+    const level = parseInt(document.getElementById("level").value);
     const threeWordsMode = document.getElementById("threeWordsMode");
     const fourWordsMode = document.getElementById("fourWordsMode");
     const fiveWordsMode = document.getElementById("fiveWordsMode");
@@ -385,4 +468,32 @@ document.getElementById("level").addEventListener("change", function () {
         fourWordsMode.disabled = false;
         fiveWordsMode.disabled = false;
     }
+}
+
+// Инициализация
+document.getElementById("startButton").addEventListener("click", startGame);
+document.getElementById("checkButton").addEventListener("click", checkWord);
+document.getElementById("undoButton").addEventListener("click", undoMove);
+document.getElementById("hintButton").addEventListener("click", showHint);
+document.getElementById("showAnswerButton").addEventListener("click", showAnswer);
+document.getElementById("rulesButton").addEventListener("click", toggleRules);
+document.getElementById("resetProgressButton").addEventListener("click", resetProgress);
+
+// Управление звуком
+document.getElementById("soundToggle").addEventListener("change", function() {
+    soundEnabled = this.checked;
 });
+
+// Переключение режимов
+document.querySelectorAll('input[name="gameMode"]').forEach(radio => {
+    radio.addEventListener("change", function() {
+        currentMode = this.value;
+        updateLevelSelect();
+    });
+});
+
+// Обновление уровней при смене уровня
+document.getElementById("level").addEventListener("change", updateModeAvailability);
+
+// Инициализируем список уровней при загрузке
+updateLevelSelect();
