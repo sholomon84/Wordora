@@ -1,0 +1,220 @@
+/* Подключение кастомного шрифта (если используешь файл) */
+@font-face {
+    font-family: 'Cactus Classical Serif';
+    src: url('fonts/CactusClassicalSerif.woff2') format('woff2'),
+         url('fonts/CactusClassicalSerif.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Основные стили */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    text-align: center;
+    background-image: url('images/wood.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Контейнер игры */
+.game {
+    margin-top: 20px;
+    background-color: #d1c5be;
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    width: 1200px;
+    max-width: 90%;
+}
+
+/* Заголовок */
+h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 30px;
+}
+
+/* Переключатель режимов */
+.game-mode-selector {
+    margin: 20px 0;
+}
+
+.game-mode-selector label {
+    margin: 0 15px;
+    font-size: 20px;
+    color: #1c1c1e;
+}
+
+.game-mode-selector input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Кнопка сброса прогресса */
+#resetProgressButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-left: 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff3b30;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+#resetProgressButton:hover {
+    opacity: 0.9;
+}
+
+/* Буквы */
+#letters {
+    font-family: 'Cactus Classical Serif', serif;
+    font-size: 60px;
+    font-weight: 400;
+    margin: 30px;
+    color: #1c1c1e;
+    letter-spacing: 2px;
+}
+
+/* Поле ввода */
+#wordInput {
+    padding: 15px;
+    font-size: 24px;
+    margin: 20px;
+    width: 70%;
+    border: 1px solid #d1d1d6;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #1c1c1e;
+    outline: none;
+}
+
+#wordInput:focus {
+    border-color: #007aff;
+}
+
+/* Кнопки */
+#checkButton, #undoButton, #hintButton, #showAnswerButton {
+    padding: 15px 30px;
+    font-size: 20px;
+    margin: 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+#checkButton:hover, #undoButton:hover, #hintButton:hover, #showAnswerButton:hover {
+    opacity: 0.9;
+}
+
+#hintButton, #showAnswerButton {
+    background-color: #34c759;
+}
+
+#hintButton:hover, #showAnswerButton:hover {
+    opacity: 0.9;
+}
+
+#undoButton {
+    background-color: #8e8e93;
+}
+
+#undoButton:hover {
+    opacity: 0.9;
+}
+
+/* Сообщения */
+#message {
+    font-size: 20px;
+    color: #ff3b30;
+    margin: 15px;
+}
+
+/* Использованные слова */
+#usedWords {
+    font-size: 20px;
+    margin: 30px;
+    color: #000000;
+}
+
+/* Выбор уровня и кнопка "Начать игру" */
+#level, #startButton {
+    padding: 15px;
+    font-size: 20px;
+    margin: 15px;
+    border-radius: 8px;
+    border: 1px solid #d1d1d6;
+    background-color: #ffffff;
+    color: #1c1c1e;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startButton {
+    background-color: #007aff;
+    color: white;
+}
+
+#startButton:hover {
+    background-color: #0063cc;
+}
+
+/* Стили для кнопки и контейнера правил */
+#rulesButton {
+    padding: 15px 30px;
+    font-size: 20px;
+    margin: 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff9500;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+#rulesButton:hover {
+    opacity: 0.9;
+}
+
+#rules {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px;
+    text-align: left;
+    color: #1c1c1e;
+    font-size: 18px;
+}
+
+#rules h2 {
+    font-size: 24px;
+    color: #007aff;
+}
+
+/* Стили для таймера и звука */
+#timer {
+    font-size: 14px;
+    color: #1c1c1e;
+    font-weight: 600;
+}
+
+#soundToggle {
+    margin-right: 5px;
+}
+
+#soundToggle + label {
+    font-size: 14px;
+    color: #1c1c1e;
+    font-weight: 600;
+}
