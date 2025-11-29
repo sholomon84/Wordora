@@ -1,2 +1,0 @@
-# Wordora
-Word game
